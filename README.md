@@ -24,9 +24,6 @@ pip install -r requirements.txt
 
 # start uvicorn
 uvicorn main:app --reload
-
-# install client dependencies
-cd ../client && npm i
 ```
 
 ### Client
