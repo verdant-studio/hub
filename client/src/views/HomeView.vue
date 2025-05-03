@@ -3,7 +3,7 @@ import Table from '../components/Table.vue'
 </script>
 
 <template>
-  <main>
+  <main class="container p-8">
     <Table />
   </main>
 </template>
