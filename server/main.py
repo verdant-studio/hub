@@ -56,3 +56,12 @@ def update_website(website_id: int, updated: WebsiteCreate, db: Session = Depend
     db.commit()
     db.refresh(website)
     return website
+
+@app.delete('/api/v1/websites/{website_id}', status_code=204)
+def delete_website(website_id: int, db: Session = Depends(get_db)):
+    website = db.query(Website).filter(Website.id == website_id).first()
+    if not website:
+        raise HTTPException(status_code=404, detail='Website not found')
+    db.delete(website)
+    db.commit()
+    return

@@ -56,12 +56,21 @@
             required
           />
         </div>
-        <button
-          type="submit"
-          class="rounded-md bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:outline-none mt-4 cursor-pointer"
-        >
-          Update
-        </button>
+        <div class="mt-4 flex justify-between">
+          <button
+            type="submit"
+            class="rounded-md bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:outline-none cursor-pointer"
+          >
+            Update
+          </button>
+          <button
+            @click.prevent="deleteWebsite"
+            type="button"
+            class="rounded-md bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:outline-none cursor-pointer"
+          >
+            Delete
+          </button>
+        </div>
       </form>
     </div>
   </section>
@@ -96,5 +105,19 @@ onMounted(async () => {
 const updateWebsite = async () => {
   await axios.put(`http://localhost:8000/api/v1/websites/${id}`, form.value)
   router.push('/')
+}
+
+const deleteWebsite = async () => {
+  const confirmDelete = confirm('Are you sure you want to delete this website?')
+  if (!confirmDelete) return
+
+  try {
+    await axios.delete(`http://localhost:8000/api/v1/websites/${id}`)
+    alert('Website deleted.')
+    router.push('/')
+  } catch (err) {
+    console.error(err)
+    alert('Failed to delete website.')
+  }
 }
 </script>
