@@ -23,13 +23,12 @@ const data = ref<Site[]>([])
 
 onMounted(async () => {
   try {
-    const res = await axios.get<Site[]>('http://localhost:8000/api/v1/websites  ')
+    const res = await axios.get<Site[]>('http://localhost:8000/api/v1/websites')
     data.value = res.data
   } catch (err) {
     console.error('Failed to fetch websites', err)
   }
 })
-
 
 const columnHelper = createColumnHelper<Site>()
 const columns = [
@@ -105,7 +104,7 @@ const table = useVueTable({
             />
           </td>
           <td>
-            <RouterLink to="/edit/1">
+            <RouterLink :to="`/edit/${row.original.id}`">
               <svg
                 class="w-4 h-4"
                 xmlns="http://www.w3.org/2000/svg"
