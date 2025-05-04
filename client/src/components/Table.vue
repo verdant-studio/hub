@@ -1,16 +1,17 @@
 <script setup lang="tsx">
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 import {
+  createColumnHelper,
   FlexRender,
   getCoreRowModel,
   useVueTable,
-  createColumnHelper,
 } from '@tanstack/vue-table'
-import { ref } from 'vue'
 import TableSiteName from './TableSiteName.vue'
 
 type Site = {
-  site_name: string
-  site_url: string
+  name: string
+  url: string
   wp_version: string
   health_rating: number
   updates_available: number
@@ -18,60 +19,30 @@ type Site = {
   maintainers: number
 }
 
-const defaultData: Site[] = [
-  {
-    site_name: 'Verdant Studio',
-    site_url: 'https://www.verdant.studio',
-    wp_version: '6.8.1',
-    health_rating: 5,
-    updates_available: 0,
-    clients: 'Green Leaf',
-    maintainers: 'Robert',
-  },
-  {
-    site_name: 'Eight Vein',
-    site_url: 'https://www.google.com',
-    wp_version: '6.7.2',
-    health_rating: 4,
-    updates_available: 11,
-    clients: null,
-    maintainers: null,
-  },
-]
+const data = ref<Site[]>([])
+
+onMounted(async () => {
+  try {
+    const res = await axios.get<Site[]>('http://localhost:8000/api/v1/websites  ')
+    data.value = res.data
+  } catch (err) {
+    console.error('Failed to fetch websites', err)
+  }
+})
+
 
 const columnHelper = createColumnHelper<Site>()
-
 const columns = [
-  columnHelper.accessor('site_name', {
+  columnHelper.accessor('name', {
     header: () => 'Name',
-    cell: ({ row }) => {
-			return (
-				<TableSiteName
-					name={row.original.site_name}
-					url={row.original.site_url}
-				/>
-			);
-		},
+    cell: ({ row }) => (
+      <TableSiteName name={row.original.name} url={row.original.url} />
+    ),
   }),
-  columnHelper.accessor('health_rating', {
-    header: () => 'Health',
-    footer: props => props.column.id,
-  }),
-  columnHelper.accessor('wp_version', {
-    header: 'WP Version',
-    footer: props => props.column.id,
-  }),
-  columnHelper.accessor('updates_available', {
-    header: 'Updates available',
-    footer: props => props.column.id,
-  }),
+  columnHelper.accessor('health_rating', { header: 'Health' }),
+  columnHelper.accessor('wp_version', { header: 'WP Version' }),
+  columnHelper.accessor('updates_available', { header: 'Updates Available' }),
 ]
-
-const data = ref(defaultData)
-
-const rerender = () => {
-  data.value = defaultData
-}
 
 const table = useVueTable({
   get data() {
@@ -157,5 +128,4 @@ const table = useVueTable({
 
 <style>
   @reference '../assets/main.css';
-
 </style>
