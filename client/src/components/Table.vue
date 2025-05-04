@@ -86,7 +86,7 @@ const table = useVueTable({
   <div class="relative flex flex-col w-full overflow-x-auto">
     <h1 class="text-4xl font-bold mb-6">Hub</h1>
     <table class="bg-stone-800 rounded w-full text-left table-auto min-w-max">
-      <thead class="border-stone-700 border-b">
+      <thead>
         <tr
           v-for="headerGroup in table.getHeaderGroups()"
           :key="headerGroup.id"
@@ -104,23 +104,25 @@ const table = useVueTable({
             />
           </th>
           <th>
-            <svg
-              class="w-5 h-5"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-            >
-              <circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/>
-            </svg>
+            <RouterLink to="/add">
+              <svg
+                class="w-5 h-5"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/>
+              </svg>
+            </RouterLink>
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="row in table.getRowModel().rows" :key="row.id">
+        <tr v-for="row in table.getRowModel().rows" :key="row.id" class="odd:bg-stone-700">
           <td
             class="p-3"
             v-for="cell in row.getVisibleCells()"
