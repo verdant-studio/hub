@@ -3,15 +3,29 @@
     <div class="container max-w-3xl p-8">
       <div class="flex items-center mb-6 space-x-2">
         <RouterLink to="/">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-arrow-left"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
         </RouterLink>
         <h1 class="text-4xl font-bold">Add</h1>
       </div>
-      <form class="space-y-5 rounded bg-stone-800 p-4">
+      <form @submit.prevent="submitForm" class="space-y-5 rounded bg-stone-800 p-4">
         <div>
-          <label for="site-url" class="block text-lg font-medium text-stone-400 cursor-pointer">Site URL</label>
+          <label for="name" class="block text-lg font-medium text-stone-400 cursor-pointer">Name</label>
           <input
-            id="site-url"
+            v-model="form.name"
+            id="name"
+            type="text"
+            class="mt-1 block w-full rounded-md border-stone-300 bg-stone-700 p-2 focus:border-green-500 focus:ring-green-500"
+            placeholder="Enter a name for the site"
+            required
+          />
+        </div>
+        <div>
+          <label for="url" class="block text-lg font-medium text-stone-400 cursor-pointer">Site URL</label>
+          <input
+            v-model="form.url"
+            id="url"
             type="url"
             class="mt-1 block w-full rounded-md border-stone-300 bg-stone-700 p-2 focus:border-green-500 focus:ring-green-500"
             placeholder="https://www.example.com/wp-json"
@@ -21,6 +35,7 @@
         <div>
           <label for="username" class="block text-lg font-medium text-stone-400 cursor-pointer">Username</label>
           <input
+            v-model="form.username"
             id="username"
             type="text"
             class="mt-1 block w-full rounded-md border-stone-300 bg-stone-700 p-2 focus:border-green-500 focus:ring-green-500"
@@ -33,6 +48,7 @@
             >Application Password</label
           >
           <input
+            v-model="form.app_password"
             id="app-password"
             type="password"
             class="mt-1 block w-full rounded-md border-stone-300 bg-stone-700 p-2 focus:border-green-500 focus:ring-green-500"
@@ -50,3 +66,31 @@
     </div>
   </section>
 </template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      form: {
+        name: '',
+        url: '',
+        username: '',
+        app_password: ''
+      }
+    };
+  },
+  methods: {
+    async submitForm() {
+      try {
+        await axios.post('http://localhost:8000/api/v1/websites', this.form);
+        this.$router.push('/');
+        this.form = { name: '', url: '', username: '', app_password: '' };
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }
+};
+</script>

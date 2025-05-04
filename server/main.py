@@ -33,12 +33,7 @@ def read_websites(db: Session = Depends(get_db)):
 
 @app.post('/api/v1/websites')
 def create_website(website: WebsiteCreate, db: Session = Depends(get_db)):
-    db_website = Website(
-      name=website.name,
-      url=str(website.url),
-      username=website.username,
-      app_password=website.app_password
-    )
+    db_website = Website(**website.dict())
     db.add(db_website)
     db.commit()
     db.refresh(db_website)
