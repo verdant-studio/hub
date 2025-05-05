@@ -5,7 +5,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from models import Website, CrawlResult
 from schemas import WebsiteCreate, WebsiteOut
-from sqlalchemy import desc
+from sqlalchemy import delete, desc, select
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -36,6 +36,21 @@ def get_db():
     finally:
         db.close()
 
+def prune_old_crawls(db: Session, website_id: int, keep: int = 5):
+        # Get the IDs to delete — entries older than the most recent `keep`
+    subquery = (
+        select(CrawlResult.id)
+        .where(CrawlResult.website_id == website_id)
+        .order_by(CrawlResult.timestamp.desc())
+        .offset(keep)
+    ).subquery()
+
+    # Now delete entries that match those IDs
+    db.execute(
+        delete(CrawlResult).where(CrawlResult.id.in_(select(subquery.c.id)))
+    )
+    db.commit()
+
 def crawl_sites():
     db: Session = SessionLocal()
     websites = db.query(Website).all()
@@ -65,6 +80,7 @@ def crawl_sites():
             db.add(result)
 
     db.commit()
+    prune_old_crawls(db, site.id, keep=5)
     db.close()
 
 @app.get('/api/v1/websites', response_model=List[WebsiteOut])
