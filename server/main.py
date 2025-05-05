@@ -1,10 +1,19 @@
+from apscheduler.schedulers.background import BackgroundScheduler
+from database import SessionLocal, engine, Base
+from datetime import datetime
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
-from models import Website
+from models import Website, CrawlResult
 from schemas import WebsiteCreate, WebsiteOut
-from database import SessionLocal, engine, Base
+from sqlalchemy import desc
+from sqlalchemy.orm import Session
 from typing import List
+
+import httpx
+import logging
+import time
+
+logging.basicConfig(level=logging.INFO)
 
 Base.metadata.create_all(bind=engine)
 
@@ -27,6 +36,37 @@ def get_db():
     finally:
         db.close()
 
+def crawl_sites():
+    db: Session = SessionLocal()
+    websites = db.query(Website).all()
+    for site in websites:
+        try:
+            start = time.time()
+            response = httpx.get(site.url, timeout=10)
+            duration = int((time.time() - start) * 1000)
+
+            result = CrawlResult(
+                website_id=site.id,
+                status_code=response.status_code,
+                response_time_ms=duration,
+                timestamp=datetime.utcnow()
+            )
+            db.add(result)
+            logging.info(f'Crawled {site.url} - {response.status_code} ({duration}ms)')
+
+        except Exception as e:
+            logging.error(f'Failed to crawl {site.url}: {e}')
+            result = CrawlResult(
+                website_id=site.id,
+                status_code=None,
+                response_time_ms=None,
+                timestamp=datetime.utcnow()
+            )
+            db.add(result)
+
+    db.commit()
+    db.close()
+
 @app.get('/api/v1/websites', response_model=List[WebsiteOut])
 def read_websites(db: Session = Depends(get_db)):
     return db.query(Website).all()
@@ -44,6 +84,16 @@ def get_website(website_id: int, db: Session = Depends(get_db)):
     website = db.query(Website).filter(Website.id == website_id).first()
     if not website:
         raise HTTPException(status_code=404, detail='Website not found')
+
+    latest_crawl = (
+        db.query(CrawlResult)
+        .filter(CrawlResult.website_id == website.id)
+        .order_by(desc(CrawlResult.timestamp))
+        .first()
+    )
+
+    website.latest_crawl = latest_crawl
+
     return website
 
 @app.put('/api/v1/websites/{website_id}', response_model=WebsiteOut)
@@ -65,3 +115,12 @@ def delete_website(website_id: int, db: Session = Depends(get_db)):
     db.delete(website)
     db.commit()
     return
+
+# APScheduler setup
+scheduler = BackgroundScheduler()
+scheduler.add_job(crawl_sites, 'interval', minutes=1)  # Change interval as needed
+scheduler.start()
+
+@app.on_event('shutdown')
+def shutdown_event():
+    scheduler.shutdown()

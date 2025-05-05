@@ -1,4 +1,14 @@
+from datetime import datetime
 from pydantic import BaseModel, ConfigDict, HttpUrl
+from typing import Optional
+
+class CrawlResultOut(BaseModel):
+    status_code: Optional[int]
+    response_time_ms: Optional[int]
+    timestamp: datetime
+
+    class Config:
+        orm_mode = True
 
 class WebsiteCreate(BaseModel):
     name: str
@@ -17,5 +27,6 @@ class WebsiteOut(BaseModel):
     url: HttpUrl
     username: str
     app_password: str
+    latest_crawl: Optional[CrawlResultOut] = None
 
     model_config = ConfigDict(from_attributes=True)
