@@ -67,8 +67,8 @@
   </section>
 </template>
 
-<script>
-import axios from 'axios';
+<script lang="ts">
+import axios from 'axios'
 
 export default {
   data() {
@@ -84,13 +84,13 @@ export default {
   methods: {
     async submitForm() {
       try {
-        await axios.post('http://localhost:8000/api/v1/websites', this.form);
-        this.$router.push('/');
-        this.form = { name: '', url: '', username: '', app_password: '' };
+        await axios.post('http://localhost:8000/api/v1/websites', this.form)
+        this.$router.push('/')
+        this.form = { name: '', url: '', username: '', app_password: '' }
       } catch (err) {
-        console.error(err);
+        console.error(err)
       }
     }
   }
-};
+}
 </script>

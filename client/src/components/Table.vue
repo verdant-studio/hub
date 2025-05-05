@@ -10,6 +10,7 @@ import {
 import TableSiteName from './TableSiteName.vue'
 
 type Site = {
+  id: number
   name: string
   url: string
   wp_version: string
