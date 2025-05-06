@@ -54,6 +54,12 @@ def prune_old_crawls(db: Session, website_id: int, keep: int = 5):
 def crawl_sites():
     db: Session = SessionLocal()
     websites = db.query(Website).all()
+
+    if not websites:
+      print("No websites to crawl.")
+      db.close()
+      return
+
     for site in websites:
         try:
             start = time.time()
