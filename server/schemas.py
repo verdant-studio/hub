@@ -3,6 +3,7 @@ from pydantic import BaseModel, ConfigDict, HttpUrl
 from typing import Optional
 
 class CrawlResultOut(BaseModel):
+    id: int
     status_code: Optional[int]
     response_time_ms: Optional[int]
     timestamp: datetime

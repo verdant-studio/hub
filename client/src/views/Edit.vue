@@ -1,9 +1,9 @@
 <template>
   <section>
-    <div class="container max-w-3xl p-8">
-      <div class="flex items-center mb-6 space-x-2">
+    <div class="container max-w-3xl p-8 space-y-6">
+      <div class="flex items-center space-x-2">
         <RouterLink to="/">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="feather feather-arrow-left">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
             <path d="M19 12H5M12 19l-7-7 7-7"/>
           </svg>
         </RouterLink>
@@ -72,6 +72,26 @@
           </button>
         </div>
       </form>
+
+      <h2 class="text-3xl font-bold mb-6">Log</h2>
+      <div class="rounded bg-stone-800 overflow-hidden">
+        <table class="table-auto w-full text-left text-stone-400">
+          <thead>
+            <tr>
+              <th class="p-3">Status Code</th>
+              <th class="p-3">Response Time (ms)</th>
+              <th class="p-3">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="result in crawlResults" :key="result.timestamp" class="odd:bg-stone-700 odd:text-stone-300">
+              <td class="p-3">{{ result.status_code || 'N/A' }}</td>
+              <td class="p-3">{{ result.response_time_ms || 'N/A' }}</td>
+              <td class="p-3">{{ new Date(result.timestamp).toLocaleString() }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 </template>
@@ -92,13 +112,31 @@ const form = ref({
   app_password: '',
 })
 
+interface CrawlResult {
+  status_code?: number
+  response_time_ms?: number
+  timestamp: string
+}
+
+const crawlResults = ref<CrawlResult[]>([])
+
 onMounted(async () => {
+  // Fetch website data
   const { data } = await axios.get(`http://localhost:8000/api/v1/websites/${id}`)
   form.value = {
     name: data.name,
     url: data.url,
     username: data.username,
     app_password: data.app_password,
+  }
+
+  // Fetch last 5 crawl results
+  try {
+    const results = await axios.get(`http://localhost:8000/api/v1/crawl-results/${id}`)
+    crawlResults.value = results.data.slice(0, 5)
+  } catch (err) {
+    console.error('Failed to fetch crawl results:', err)
+    crawlResults.value = []
   }
 })
 

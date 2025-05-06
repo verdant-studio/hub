@@ -4,7 +4,7 @@ from datetime import datetime
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from models import Website, CrawlResult
-from schemas import WebsiteCreate, WebsiteOut
+from schemas import CrawlResultOut, WebsiteCreate, WebsiteOut
 from sqlalchemy import delete, desc, select
 from sqlalchemy.orm import Session
 from typing import List
@@ -131,6 +131,20 @@ def delete_website(website_id: int, db: Session = Depends(get_db)):
     db.delete(website)
     db.commit()
     return
+
+@app.get('/api/v1/crawl-results/{website_id}', response_model=List[CrawlResultOut])
+def get_crawl_results(website_id: int, db: Session = Depends(get_db)):
+    results = (
+        db.query(CrawlResult)
+        .filter(CrawlResult.website_id == website_id)
+        .order_by(CrawlResult.timestamp.desc())
+        .all()
+    )
+
+    if not results:
+        raise HTTPException(status_code=404, detail="No crawl results found for this website")
+
+    return results
 
 # APScheduler setup
 scheduler = BackgroundScheduler()
