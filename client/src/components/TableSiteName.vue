@@ -10,7 +10,7 @@ const decoded_name = decode(name);
 </script>
 
 <template>
-  <a className="wpsm-table-link" :href="url" target="_blank" rel="noreferrer">
+  <a :href="url" target="_blank" rel="noreferrer">
 		{{ decoded_name }}
 	</a>
 </template>

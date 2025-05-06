@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div class="container max-w-3xl p-8 space-y-6">
+    <div class="container max-w-3xl p-8 space-y-7">
       <div class="flex items-center space-x-2">
         <RouterLink to="/">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
@@ -56,7 +56,7 @@
             required
           />
         </div>
-        <div class="mt-4 flex justify-between">
+        <div class="pt-4 flex justify-between">
           <button
             type="submit"
             class="rounded-md bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:outline-none cursor-pointer"
@@ -73,24 +73,26 @@
         </div>
       </form>
 
-      <h2 class="text-3xl font-bold mb-6">Log</h2>
-      <div class="rounded bg-stone-800 overflow-hidden">
-        <table class="table-auto w-full text-left text-stone-400">
-          <thead>
-            <tr>
-              <th class="p-3">Status Code</th>
-              <th class="p-3">Response Time (ms)</th>
-              <th class="p-3">Timestamp</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="result in crawlResults" :key="result.timestamp" class="odd:bg-stone-700 odd:text-stone-300">
-              <td class="p-3">{{ result.status_code || 'N/A' }}</td>
-              <td class="p-3">{{ result.response_time_ms || 'N/A' }}</td>
-              <td class="p-3">{{ new Date(result.timestamp).toLocaleString() }}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div>
+        <h2 class="text-3xl font-bold mb-5">Log</h2>
+        <div class="rounded bg-stone-800 overflow-hidden">
+          <table class="table-auto w-full text-left text-stone-400">
+            <thead>
+              <tr>
+                <th class="p-3">Status Code</th>
+                <th class="p-3">Response Time (ms)</th>
+                <th class="p-3">Timestamp</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="result in crawlResults" :key="result.timestamp" class="odd:bg-stone-700 odd:text-stone-300 text-sm">
+                <td class="p-3">{{ result.status_code || 'N/A' }}</td>
+                <td class="p-3">{{ result.response_time_ms || 'N/A' }}</td>
+                <td class="p-3">{{ new Date(result.timestamp).toLocaleString() }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </section>

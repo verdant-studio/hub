@@ -56,7 +56,7 @@ const table = useVueTable({
 <template>
   <div class="relative flex flex-col w-full overflow-x-auto">
     <h1 class="text-4xl font-bold mb-6">Hub</h1>
-    <table class="bg-stone-800 rounded w-full text-left table-auto min-w-max">
+    <table class="bg-stone-800 rounded w-full text-left table-auto min-w-max overflow-hidden">
       <thead>
         <tr
           v-for="headerGroup in table.getHeaderGroups()"
