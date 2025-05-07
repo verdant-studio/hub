@@ -99,7 +99,6 @@ def crawl_sites():
                         result.health_rating=data["health_rating"]
                         result.updates_available=data["updates_available"]
                         db.commit()
-                        prune_old_crawls(db, site.id, keep=5)
                     else:
                         print(f"Incomplete data from {url}, skipping.")
 
@@ -123,6 +122,7 @@ def crawl_sites():
                 timestamp=datetime.utcnow(),
             )
 
+    prune_old_crawls(db, site.id, keep=5)
     db.close()
 
 
