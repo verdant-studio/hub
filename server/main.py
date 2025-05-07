@@ -128,7 +128,18 @@ def crawl_sites():
 
 @app.get('/api/v1/websites', response_model=List[WebsiteOut])
 def read_websites(db: Session = Depends(get_db)):
-    return db.query(Website).all()
+    websites = db.query(Website).all()
+
+    for website in websites:
+        latest_crawl = (
+            db.query(CrawlResult)
+            .filter(CrawlResult.website_id == website.id)
+            .order_by(desc(CrawlResult.timestamp))
+            .first()
+        )
+        website.latest_crawl = latest_crawl
+
+    return websites
 
 @app.post('/api/v1/websites')
 def create_website(website: WebsiteCreate, db: Session = Depends(get_db)):

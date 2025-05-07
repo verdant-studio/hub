@@ -7,17 +7,22 @@ import {
   getCoreRowModel,
   useVueTable,
 } from '@tanstack/vue-table'
+import TableHealth from './TableHealth.vue'
 import TableSiteName from './TableSiteName.vue'
 
 type Site = {
   id: number
   name: string
   url: string
-  wp_version: string
-  health_rating: number
-  updates_available: number
-  clients: string
-  maintainers: number
+  latest_crawl: {
+    id: number
+    status_code: number
+    response_time_ms: number
+    timestamp: string
+    wp_version: string
+    health_rating: number
+    updates_available: number
+  }
 }
 
 const data = ref<Site[]>([])
@@ -39,9 +44,24 @@ const columns = [
       <TableSiteName name={row.original.name} url={row.original.url} />
     ),
   }),
-  columnHelper.accessor('health_rating', { header: 'Health' }),
-  columnHelper.accessor('wp_version', { header: 'WP Version' }),
-  columnHelper.accessor('updates_available', { header: 'Updates Available' }),
+  columnHelper.accessor('latest_crawl.health_rating', {
+    header: 'Health',
+    cell: ({ row }) => (
+      <TableHealth rating={row.original.latest_crawl.health_rating} />
+    ),
+  }),
+  columnHelper.accessor('latest_crawl.wp_version', {
+    header: 'WP Version',
+    cell: ({ row }) => {
+      return <span class="text-stone-400">{row.original.latest_crawl.wp_version}</span>
+    },
+  }),
+  columnHelper.accessor('latest_crawl.updates_available', {
+    header: 'Updates Available',
+    cell: ({ row }) => {
+      return <span class="text-stone-400">{row.original.latest_crawl.updates_available}</span>
+    },
+  }),
 ]
 
 const table = useVueTable({
