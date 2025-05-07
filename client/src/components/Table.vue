@@ -5,6 +5,8 @@ import {
   createColumnHelper,
   FlexRender,
   getCoreRowModel,
+  type SortingState,
+  getSortedRowModel,
   useVueTable,
 } from '@tanstack/vue-table'
 import TableHealth from './TableHealth.vue'
@@ -26,6 +28,8 @@ type Site = {
 }
 
 const data = ref<Site[]>([])
+
+const sorting = ref<SortingState>([])
 
 onMounted(async () => {
   try {
@@ -69,7 +73,19 @@ const table = useVueTable({
     return data.value
   },
   columns,
+  state: {
+    get sorting() {
+      return sorting.value
+    },
+  },
+  onSortingChange: updaterOrValue => {
+    sorting.value =
+      typeof updaterOrValue === 'function'
+        ? updaterOrValue(sorting.value)
+        : updaterOrValue
+  },
   getCoreRowModel: getCoreRowModel(),
+  getSortedRowModel: getSortedRowModel(),
 })
 </script>
 
@@ -87,7 +103,16 @@ const table = useVueTable({
             v-for="header in headerGroup.headers"
             :key="header.id"
             :colSpan="header.colSpan"
+            :class="
+              header.column.getCanSort() ? 'cursor-pointer select-none' : ''
+            "
+            @click="header.column.getToggleSortingHandler()?.($event)"
           >
+          {{
+                { asc: ' 🔼', desc: ' 🔽' }[
+                  header.column.getIsSorted() as string
+                ]
+              }}
             <FlexRender
               v-if="!header.isPlaceholder"
               :render="header.column.columnDef.header"
