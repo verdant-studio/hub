@@ -9,9 +9,9 @@ from sqlalchemy import delete, desc, select
 from sqlalchemy.orm import Session
 from typing import List
 
-import httpx
+import base64
+import requests
 import logging
-import time
 
 logging.basicConfig(level=logging.INFO)
 
@@ -22,7 +22,7 @@ app = FastAPI()
 # CORS for frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['http://localhost:5173'],  # or 3000 depending on Vue setup
+    allow_origins=['http://localhost:5173'],
     allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*'],
@@ -52,42 +52,65 @@ def prune_old_crawls(db: Session, website_id: int, keep: int = 5):
     db.commit()
 
 def crawl_sites():
-    db: Session = SessionLocal()
-    websites = db.query(Website).all()
+    db = SessionLocal()
+    sites = db.query(Website).all()
 
-    if not websites:
-      print("No websites to crawl.")
-      db.close()
-      return
+    if not sites:
+        print("No websites to crawl.")
+        db.close()
+        return
 
-    for site in websites:
+    for site in sites:
         try:
-            start = time.time()
-            response = httpx.get(site.url, timeout=10)
-            duration = int((time.time() - start) * 1000)
+            start = datetime.utcnow()
+            url = f"{site.url.rstrip('/')}/relay/v1/core"
 
-            result = CrawlResult(
-                website_id=site.id,
-                status_code=response.status_code,
-                response_time_ms=duration,
-                timestamp=datetime.utcnow()
-            )
-            db.add(result)
-            logging.info(f'Crawled {site.url} - {response.status_code} ({duration}ms)')
+            # Encode username and app_password as Base64
+            credentials = f"{site.username}:{site.app_password}"
+            encoded_credentials = base64.b64encode(credentials.encode()).decode()
+
+            # Add Authorization header
+            headers = {
+                "Authorization": f"Basic {encoded_credentials}"
+            }
+
+            response = requests.get(url, headers=headers, timeout=10, verify=False) # TODO: verify=False is insecure, consider using a proper SSL certificate
+            elapsed_ms = int((datetime.utcnow() - start).total_seconds() * 1000)
+
+            print(f"Crawling {response} took {elapsed_ms} ms")
+
+            if response.status_code == 200:
+                try:
+                    data = response.json()
+
+                    # Only store if essential fields are present
+                    if all(k in data for k in ["wp_version", "health_rating", "updates_available"]):
+                        result = CrawlResult(
+                            website_id=site.id,
+                            status_code=response.status_code,
+                            response_time_ms=elapsed_ms,
+                            wp_version=data["wp_version"],
+                            health_rating=data["health_rating"],
+                            updates_available=data["updates_available"],
+                            timestamp=datetime.utcnow(),
+                        )
+                        db.add(result)
+                        db.commit()
+                        prune_old_crawls(db, site.id, keep=5)
+                    else:
+                        print(f"Incomplete data from {url}, skipping.")
+
+                except ValueError:
+                    print(f"Invalid JSON from {url}, skipping.")
+
+            else:
+                print(f"Non-200 response from {url}, skipping.")
 
         except Exception as e:
-            logging.error(f'Failed to crawl {site.url}: {e}')
-            result = CrawlResult(
-                website_id=site.id,
-                status_code=None,
-                response_time_ms=None,
-                timestamp=datetime.utcnow()
-            )
-            db.add(result)
+            print(f"Error crawling {url}: {e}")
 
-    db.commit()
-    prune_old_crawls(db, site.id, keep=5)
     db.close()
+
 
 @app.get('/api/v1/websites', response_model=List[WebsiteOut])
 def read_websites(db: Session = Depends(get_db)):

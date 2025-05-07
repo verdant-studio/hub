@@ -12,6 +12,10 @@ class CrawlResult(Base):
     response_time_ms = Column(Integer, nullable=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
 
+    wp_version = Column(String, nullable=True)
+    health_rating = Column(Integer, nullable=True)
+    updates_available = Column(Integer, nullable=True)
+
     website = relationship('Website', back_populates='crawl_results')
 
 class Website(Base):

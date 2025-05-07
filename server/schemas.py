@@ -8,8 +8,11 @@ class CrawlResultOut(BaseModel):
     response_time_ms: Optional[int]
     timestamp: datetime
 
-    class Config:
-        orm_mode = True
+    wp_version: Optional[str]
+    health_rating: Optional[int]
+    updates_available: Optional[int]
+
+    model_config = ConfigDict(from_attributes=True)
 
 class WebsiteCreate(BaseModel):
     name: str
