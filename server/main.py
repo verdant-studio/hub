@@ -77,7 +77,17 @@ def crawl_sites():
             response = requests.get(url, headers=headers, timeout=10, verify=False) # TODO: verify=False is insecure, consider using a proper SSL certificate
             elapsed_ms = int((datetime.utcnow() - start).total_seconds() * 1000)
 
-            print(f"Crawling {response} took {elapsed_ms} ms")
+            result = CrawlResult(
+                website_id=site.id,
+                status_code=response.status_code,
+                response_time_ms=elapsed_ms,
+                wp_version=None,
+                health_rating=None,
+                updates_available=None,
+                timestamp=datetime.utcnow(),
+            )
+            db.add(result)
+            db.commit()
 
             if response.status_code == 200:
                 try:
@@ -85,16 +95,9 @@ def crawl_sites():
 
                     # Only store if essential fields are present
                     if all(k in data for k in ["wp_version", "health_rating", "updates_available"]):
-                        result = CrawlResult(
-                            website_id=site.id,
-                            status_code=response.status_code,
-                            response_time_ms=elapsed_ms,
-                            wp_version=data["wp_version"],
-                            health_rating=data["health_rating"],
-                            updates_available=data["updates_available"],
-                            timestamp=datetime.utcnow(),
-                        )
-                        db.add(result)
+                        result.wp_version=data["wp_version"]
+                        result.health_rating=data["health_rating"]
+                        result.updates_available=data["updates_available"]
                         db.commit()
                         prune_old_crawls(db, site.id, keep=5)
                     else:
@@ -108,6 +111,17 @@ def crawl_sites():
 
         except Exception as e:
             print(f"Error crawling {url}: {e}")
+
+            # Store the error response in the database
+            result = CrawlResult(
+                website_id=site.id,
+                status_code=None, 
+                response_time_ms=None,
+                wp_version=None,
+                health_rating=None,
+                updates_available=None,
+                timestamp=datetime.utcnow(),
+            )
 
     db.close()
 
