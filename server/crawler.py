@@ -93,5 +93,5 @@ def crawl_sites():
                 timestamp=datetime.utcnow(),
             )
 
-    prune_old_crawls(db, site.id, keep=5)
+        prune_old_crawls(db, site.id, keep=5)
     db.close()
