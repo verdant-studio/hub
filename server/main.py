@@ -7,7 +7,7 @@ from schemas import CrawlResultOut, WebsiteCreate, WebsiteOut
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from typing import List
-from crawler import crawl_sites
+from crawler import crawl_single_site, crawl_sites
 
 import logging
 
@@ -55,6 +55,9 @@ def create_website(website: WebsiteCreate, db: Session = Depends(get_db)):
     db.add(db_website)
     db.commit()
     db.refresh(db_website)
+
+    crawl_single_site(db, db_website)
+
     return db_website
 
 @app.get('/api/v1/websites/{website_id}', response_model=WebsiteOut)
@@ -104,7 +107,7 @@ def get_crawl_results(website_id: int, db: Session = Depends(get_db)):
     )
 
     if not results:
-        raise HTTPException(status_code=404, detail="No crawl results found for this website")
+        raise HTTPException(status_code=404, detail='No crawl results found for this website')
 
     return results
 
