@@ -6,7 +6,13 @@
 
 Hub lets you monitor your WordPress websites and their status from one place.
 
-This project is designed to be used alongside the [Relay](https://github.com/verdant-studio/relay) WordPress plugin.
+This project is designed to be used alongside the [Relay](https://wordpress.org/plugins/relay/) WordPress plugin.
+
+## Metrics
+
+- [x] Site Health
+- [x] Updates available
+- [x] WP version
 
 ## Getting started
 
