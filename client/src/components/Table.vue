@@ -50,20 +50,35 @@ const columns = [
   }),
   columnHelper.accessor('latest_crawl.health_rating', {
     header: 'Health',
-    cell: ({ row }) => (
-      <TableHealth rating={row.original.latest_crawl.health_rating} />
-    ),
+    cell: ({ row }) => {
+      const healthRating = row.original.latest_crawl?.health_rating;
+      return healthRating !== null && healthRating !== undefined ? (
+        <TableHealth rating={healthRating} />
+      ) : (
+        <span class="text-stone-400">-</span>
+      );
+    },
   }),
   columnHelper.accessor('latest_crawl.wp_version', {
     header: 'WP Version',
     cell: ({ row }) => {
-      return <span class="text-stone-400">{row.original.latest_crawl.wp_version}</span>
+      const wpVersion = row.original.latest_crawl?.wp_version;
+      return wpVersion ? (
+        <span class="text-stone-400">{wpVersion}</span>
+      ) : (
+        <span class="text-stone-400">-</span>
+      );
     },
   }),
   columnHelper.accessor('latest_crawl.updates_available', {
     header: 'Updates Available',
     cell: ({ row }) => {
-      return <span class="text-stone-400">{row.original.latest_crawl.updates_available}</span>
+      const wpVersion = row.original.latest_crawl?.wp_version;
+      return wpVersion ? (
+        <span class="text-stone-400">{wpVersion}</span>
+      ) : (
+        <span class="text-stone-400">-</span>
+      );
     },
   }),
 ]
