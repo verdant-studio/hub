@@ -8,11 +8,10 @@ Hub lets you monitor your WordPress websites and their status from one place.
 
 This project is designed to be used alongside the [Relay](https://wordpress.org/plugins/relay/) WordPress plugin.
 
-## Metrics
+## Features
 
-- [x] Site Health
-- [x] Updates available
-- [x] WP version
+- List websites and display their health rating, available updates, WordPress version and subsite information
+- Add maintainers
 
 ## Getting started
 
