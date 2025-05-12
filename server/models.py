@@ -1,6 +1,6 @@
 from database import Base
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, JSON, String
 from sqlalchemy.orm import relationship
 
 class CrawlResult(Base):
@@ -15,6 +15,8 @@ class CrawlResult(Base):
     wp_version = Column(String, nullable=True)
     health_rating = Column(Integer, nullable=True)
     updates_available = Column(Integer, nullable=True)
+    multisite = Column(Boolean, nullable=True)
+    subsites = Column(JSON, nullable=True)
 
     website = relationship('Website', back_populates='crawl_results')
 

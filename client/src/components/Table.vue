@@ -24,6 +24,8 @@ type Site = {
     wp_version: string
     health_rating: number
     updates_available: number
+    multisite: boolean
+    subsites: any
   }
 }
 
@@ -44,16 +46,17 @@ const columnHelper = createColumnHelper<Site>()
 const columns = [
   columnHelper.accessor('name', {
     header: () => 'Name',
-    cell: ({ row }) => (
-      <TableSiteName name={row.original.name} url={row.original.url} />
-    ),
+    cell: ({ row }) => {
+      const subsites = row.original.latest_crawl?.subsites;
+      return (<TableSiteName name={row.original.name} url={row.original.url} subsites={subsites} />)
+    },
   }),
   columnHelper.accessor('latest_crawl.health_rating', {
     header: 'Health',
     cell: ({ row }) => {
-      const healthRating = row.original.latest_crawl?.health_rating;
-      return healthRating !== null && healthRating !== undefined ? (
-        <TableHealth rating={healthRating} />
+      const record = row.original.latest_crawl?.health_rating;
+      return record !== null && record !== undefined ? (
+        <TableHealth rating={record} />
       ) : (
         <span class="text-stone-400">-</span>
       );
@@ -62,9 +65,9 @@ const columns = [
   columnHelper.accessor('latest_crawl.wp_version', {
     header: 'WP Version',
     cell: ({ row }) => {
-      const wpVersion = row.original.latest_crawl?.wp_version;
-      return wpVersion ? (
-        <span class="text-stone-400">{wpVersion}</span>
+      const record = row.original.latest_crawl?.wp_version;
+      return record ? (
+        <span class="text-stone-400">{record}</span>
       ) : (
         <span class="text-stone-400">-</span>
       );
@@ -73,9 +76,9 @@ const columns = [
   columnHelper.accessor('latest_crawl.updates_available', {
     header: 'Updates Available',
     cell: ({ row }) => {
-      const wpVersion = row.original.latest_crawl?.wp_version;
-      return wpVersion ? (
-        <span class="text-stone-400">{wpVersion}</span>
+      const record = row.original.latest_crawl?.updates_available;
+      return record ? (
+        <span class="text-stone-400">{record}</span>
       ) : (
         <span class="text-stone-400">-</span>
       );

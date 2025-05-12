@@ -1,6 +1,11 @@
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, HttpUrl
-from typing import Optional
+from typing import List, Optional
+
+class SubSite(BaseModel):
+    site_id: str
+    site_url: HttpUrl
+    site_name: str
 
 class CrawlResultOut(BaseModel):
     id: int
@@ -11,6 +16,8 @@ class CrawlResultOut(BaseModel):
     wp_version: Optional[str]
     health_rating: Optional[int]
     updates_available: Optional[int]
+    multisite: Optional[bool] = None
+    subsites: Optional[List[SubSite]] = None
 
     model_config = ConfigDict(from_attributes=True)
 

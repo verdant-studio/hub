@@ -46,17 +46,21 @@ def handle_crawl_response(db: Session, site: Website, response, elapsed_ms: int)
         health_rating=None,
         updates_available=None,
         timestamp=datetime.utcnow(),
+        multisite=None,
+        subsites=None,
     )
 
     if response.status_code == 200:
         try:
             data = response.json()
-            required_keys = ['wp_version', 'health_rating', 'updates_available']
+            required_keys = ['wp_version', 'health_rating', 'updates_available', 'multisite', 'subsites']
 
             if all(key in data for key in required_keys):
                 result.wp_version = data['wp_version']
                 result.health_rating = data['health_rating']
                 result.updates_available = data['updates_available']
+                result.multisite = data['multisite']
+                result.subsites = data['subsites'] if data['multisite'] else None
             else:
                 print(f"[{site.url}] Missing fields in response; skipping details.")
         except ValueError:
