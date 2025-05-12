@@ -17,6 +17,7 @@ type Site = {
   name: string
   url: string
   maintainers: string
+  comments: string
   latest_crawl: {
     id: number
     status_code: number
@@ -49,7 +50,8 @@ const columns = [
     header: () => 'Name',
     cell: ({ row }) => {
       const subsites = row.original.latest_crawl?.subsites;
-      return (<TableSiteName name={row.original.name} url={row.original.url} subsites={subsites} />)
+      const comments = row.original.comments;
+      return (<TableSiteName name={row.original.name} url={row.original.url} subsites={subsites} comments={comments} />)
     },
   }),
   columnHelper.accessor('latest_crawl.health_rating', {

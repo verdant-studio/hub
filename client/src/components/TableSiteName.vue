@@ -4,10 +4,11 @@ import { defineProps, onMounted } from 'vue';
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css'; // Import Tippy.js styles
 
-const { name, url, subsites } = defineProps<{
+const { name, url, subsites, comments } = defineProps<{
   name: string;
   url: string;
   subsites?: { site_id: string; site_url: string; site_name: string }[];
+  comments?: string;
 }>();
 
 const decoded_name = decode(name);
@@ -43,6 +44,7 @@ onMounted(() => {
         </li>
       </ul>
     </div>
+    <span v-if="comments && comments.length > 0" class="tooltip-trigger-2">info</span>
   </div>
 </template>
 
@@ -51,5 +53,9 @@ onMounted(() => {
 
 .tooltip-trigger {
   @apply text-xs bg-orange-200 text-orange-950 px-1 py-0.5 cursor-pointer rounded-sm;
+}
+
+.tooltip-trigger-2 {
+  @apply text-xs bg-blue-200 text-blue-950 px-1 py-0.5 cursor-pointer rounded-sm;
 }
 </style>
