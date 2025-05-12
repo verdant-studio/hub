@@ -26,6 +26,7 @@ class WebsiteCreate(BaseModel):
     url: HttpUrl
     username: str
     app_password: str
+    maintainers: Optional[str] = None
 
     def dict(self, *args, **kwargs):
         data = super().dict(*args, **kwargs)
@@ -38,6 +39,7 @@ class WebsiteOut(BaseModel):
     url: HttpUrl
     username: str
     app_password: str
+    maintainers: Optional[str] = None
     latest_crawl: Optional[CrawlResultOut] = None
 
     model_config = ConfigDict(from_attributes=True)

@@ -28,5 +28,6 @@ class Website(Base):
     url = Column(String, nullable=False)
     username = Column(String, nullable=False)
     app_password = Column(String, nullable=False)
+    maintainers = Column(String, nullable=True)
 
     crawl_results = relationship('CrawlResult', back_populates='website', cascade='all, delete')

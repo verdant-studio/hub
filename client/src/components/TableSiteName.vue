@@ -29,7 +29,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex space-x-1 items-center">
+  <div class="flex space-x-2 items-center">
     <a :href="url" target="_blank" rel="noreferrer">
       {{ decoded_name }}
     </a>
@@ -50,6 +50,6 @@ onMounted(() => {
 @reference '../assets/main.css';
 
 .tooltip-trigger {
-  @apply text-xs bg-stone-500 text-stone-950 px-1 py-0.5 cursor-pointer rounded-sm;
+  @apply text-xs bg-orange-200 text-orange-950 px-1 py-0.5 cursor-pointer rounded-sm;
 }
 </style>

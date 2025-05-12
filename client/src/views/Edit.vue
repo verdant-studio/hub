@@ -56,6 +56,17 @@
             required
           />
         </div>
+        <hr class="border-stone-700" />
+        <div>
+          <label for="maintainers" class="block text-lg font-medium text-stone-400 cursor-pointer">Maintainer(s)</label>
+          <input
+            v-model="form.maintainers"
+            id="maintainers"
+            type="text"
+            class="mt-1 block w-full rounded-md border-stone-300 bg-stone-700 p-2 focus:border-green-500 focus:ring-green-500"
+            placeholder="Enter the names of the people who maintain this site"
+          />
+        </div>
         <div class="pt-4 flex justify-between">
           <button
             type="submit"
@@ -112,6 +123,7 @@ const form = ref({
   url: '',
   username: '',
   app_password: '',
+  maintainers: '',
 })
 
 interface CrawlResult {
@@ -130,6 +142,7 @@ onMounted(async () => {
     url: data.url,
     username: data.username,
     app_password: data.app_password,
+    maintainers: data.maintainers,
   }
 
   // Fetch last 5 crawl results

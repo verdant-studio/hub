@@ -16,6 +16,7 @@ type Site = {
   id: number
   name: string
   url: string
+  maintainers: string
   latest_crawl: {
     id: number
     status_code: number
@@ -77,6 +78,17 @@ const columns = [
     header: 'Updates Available',
     cell: ({ row }) => {
       const record = row.original.latest_crawl?.updates_available;
+      return record ? (
+        <span class="text-stone-400">{record}</span>
+      ) : (
+        <span class="text-stone-400">-</span>
+      );
+    },
+  }),
+  columnHelper.accessor('maintainers', {
+    header: 'Maintainers',
+    cell: ({ row }) => {
+      const record = row.original.maintainers;
       return record ? (
         <span class="text-stone-400">{record}</span>
       ) : (
@@ -190,5 +202,5 @@ const table = useVueTable({
 </template>
 
 <style>
-  @reference '../assets/main.css';
+@reference '../assets/main.css';
 </style>
