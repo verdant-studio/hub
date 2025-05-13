@@ -4,9 +4,11 @@ from datetime import datetime
 
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
+import logging
 
 from database import SessionLocal
 from models import Website, CrawlResult
+from settings import fernet
 
 # Configuration toggle
 VERIFY_SSL = True  # Set to False only for debugging
@@ -25,7 +27,8 @@ def prune_old_crawls(db: Session, website_id: int, keep: int = 5):
 
 def build_auth_headers(site: Website) -> dict:
     """Return Basic Auth headers for a given site."""
-    credentials = f"{site.username}:{site.app_password}"
+    decrypted_pw = fernet.decrypt(site.app_password.encode()).decode()
+    credentials = f"{site.username}:{decrypted_pw}"
     encoded = base64.b64encode(credentials.encode()).decode()
     return {"Authorization": f"Basic {encoded}"}
 

@@ -12,6 +12,7 @@ This project is designed to be used alongside the [Relay](https://wordpress.org/
 
 - List websites and display their health rating, available updates, WordPress version and subsite information
 - Add maintainers
+- Add comments
 
 ## Getting started
 
@@ -26,6 +27,9 @@ source venv/bin/activate
 
 # install api dependencies
 pip install -r requirements.txt
+
+# create and set encryption key in .env
+python scripts/setup_env.py
 
 # start uvicorn
 uvicorn main:app --reload

@@ -1,13 +1,14 @@
 from apscheduler.schedulers.background import BackgroundScheduler
+from crawler import crawl_single_site, crawl_sites
 from database import SessionLocal, engine, Base
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from models import Website, CrawlResult
 from schemas import CrawlResultOut, WebsiteCreate, WebsiteOut
+from settings import fernet
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from typing import List
-from crawler import crawl_single_site, crawl_sites
 
 import logging
 
@@ -51,7 +52,15 @@ def read_websites(db: Session = Depends(get_db)):
 
 @app.post('/api/v1/websites')
 def create_website(website: WebsiteCreate, db: Session = Depends(get_db)):
-    db_website = Website(**website.dict())
+    encrypted_pw = fernet.encrypt(website.app_password.encode()).decode()
+
+    db_website = Website(
+        site_name=website.site_name,
+        site_url=website.site_url,
+        username=website.username,
+        app_password=encrypted_pw
+    )
+
     db.add(db_website)
     db.commit()
     db.refresh(db_website)
@@ -82,8 +91,15 @@ def update_website(website_id: int, updated: WebsiteCreate, db: Session = Depend
     website = db.query(Website).filter(Website.id == website_id).first()
     if not website:
         raise HTTPException(status_code=404, detail='Website not found')
-    for key, value in updated.dict().items():
-        setattr(website, key, str(value) if key == 'url' else value)
+
+    website.name = updated.name
+    website.url = str(updated.url)
+    website.username = updated.username
+
+    if updated.app_password:
+        encrypted_pw = fernet.encrypt(updated.app_password.encode()).decode()
+        website.app_password = encrypted_pw
+
     db.commit()
     db.refresh(website)
     return website
