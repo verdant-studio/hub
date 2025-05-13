@@ -131,7 +131,7 @@ const table = useVueTable({
           :key="headerGroup.id"
         >
           <th
-            class="p-3 font-normal text-left text-white"
+            class="px-4 py-3 font-normal"
             v-for="header in headerGroup.headers"
             :key="header.id"
             :colSpan="header.colSpan"
@@ -151,28 +151,30 @@ const table = useVueTable({
               :props="header.getContext()"
             />
           </th>
-          <th>
-            <RouterLink to="/add">
-              <svg
-                class="w-5 h-5"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-              >
-                <circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/>
-              </svg>
-            </RouterLink>
+          <th class="px-4 py-3">
+            <div class="flex justify-end">
+              <RouterLink to="/add">
+                <svg
+                  class="w-5 h-5 flex"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/>
+                </svg>
+              </RouterLink>
+            </div>
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="row in table.getRowModel().rows" :key="row.id" class="odd:bg-stone-700">
           <td
-            class="p-3"
+            class="px-4 py-3"
             v-for="cell in row.getVisibleCells()"
             :key="cell.id"
           >
@@ -181,21 +183,23 @@ const table = useVueTable({
               :props="cell.getContext()"
             />
           </td>
-          <td>
-            <RouterLink :to="`/edit/${row.original.id}`">
-              <svg
-                class="w-4 h-4"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-              >
-                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-              </svg>
-            </RouterLink>
+          <td class="px-4 py-3">
+            <div class="flex justify-end">
+              <RouterLink :to="`/edit/${row.original.id}`">
+                <svg
+                  class="w-4 h-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                </svg>
+              </RouterLink>
+            </div>
           </td>
         </tr>
       </tbody>
