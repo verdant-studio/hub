@@ -1,13 +1,14 @@
 from apscheduler.schedulers.background import BackgroundScheduler
+from crawler import crawl_single_site, crawl_sites
 from database import SessionLocal, engine, Base
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from models import Website, CrawlResult
 from schemas import CrawlResultOut, WebsiteCreate, WebsiteOut
+from settings import fernet
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from typing import List
-from crawler import crawl_single_site, crawl_sites
 
 import logging
 
@@ -34,6 +35,19 @@ def get_db():
     finally:
         db.close()
 
+def get_website_by_id(website_id: int, db: Session) -> Website:
+    website = db.query(Website).filter(Website.id == website_id).first()
+    if not website:
+        raise HTTPException(status_code=404, detail='Website not found')
+    return website
+
+def encrypt_password(password: str) -> str:
+    return fernet.encrypt(password.encode()).decode()
+
+def is_password_updated(new_password: str, current_encrypted_password: str) -> bool:
+    new_encrypted_password = encrypt_password(new_password)
+    return new_encrypted_password != current_encrypted_password
+
 @app.get('/api/v1/websites', response_model=List[WebsiteOut])
 def read_websites(db: Session = Depends(get_db)):
     websites = db.query(Website).all()
@@ -51,7 +65,15 @@ def read_websites(db: Session = Depends(get_db)):
 
 @app.post('/api/v1/websites')
 def create_website(website: WebsiteCreate, db: Session = Depends(get_db)):
-    db_website = Website(**website.dict())
+    encrypted_pw = encrypt_password(website.app_password)
+
+    db_website = Website(
+        name=website.name,
+        url=str(website.url),
+        username=website.username,
+        app_password=encrypted_pw
+    )
+
     db.add(db_website)
     db.commit()
     db.refresh(db_website)
@@ -62,9 +84,7 @@ def create_website(website: WebsiteCreate, db: Session = Depends(get_db)):
 
 @app.get('/api/v1/websites/{website_id}', response_model=WebsiteOut)
 def get_website(website_id: int, db: Session = Depends(get_db)):
-    website = db.query(Website).filter(Website.id == website_id).first()
-    if not website:
-        raise HTTPException(status_code=404, detail='Website not found')
+    website = get_website_by_id(website_id, db)
 
     latest_crawl = (
         db.query(CrawlResult)
@@ -79,20 +99,24 @@ def get_website(website_id: int, db: Session = Depends(get_db)):
 
 @app.put('/api/v1/websites/{website_id}', response_model=WebsiteOut)
 def update_website(website_id: int, updated: WebsiteCreate, db: Session = Depends(get_db)):
-    website = db.query(Website).filter(Website.id == website_id).first()
-    if not website:
-        raise HTTPException(status_code=404, detail='Website not found')
-    for key, value in updated.dict().items():
-        setattr(website, key, str(value) if key == 'url' else value)
+    website = get_website_by_id(website_id, db)
+
+    website.name = updated.name
+    website.url = str(updated.url)
+    website.username = updated.username
+    website.maintainers = updated.maintainers
+    website.comments = updated.comments
+
+    if updated.app_password and is_password_updated(updated.app_password, website.app_password):
+        website.app_password = encrypt_password(updated.app_password)
+
     db.commit()
     db.refresh(website)
     return website
 
 @app.delete('/api/v1/websites/{website_id}', status_code=204)
 def delete_website(website_id: int, db: Session = Depends(get_db)):
-    website = db.query(Website).filter(Website.id == website_id).first()
-    if not website:
-        raise HTTPException(status_code=404, detail='Website not found')
+    website = get_website_by_id(website_id, db)
     db.delete(website)
     db.commit()
     return

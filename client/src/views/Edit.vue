@@ -53,7 +53,6 @@
             type="password"
             class="mt-1 block w-full rounded-md border-stone-300 bg-stone-700 p-2 focus:border-green-500 focus:ring-green-500"
             placeholder="Enter your application password"
-            required
           />
         </div>
         <hr class="border-stone-700" />
@@ -152,7 +151,7 @@ onMounted(async () => {
     name: data.name,
     url: data.url,
     username: data.username,
-    app_password: data.app_password,
+    app_password: '',
     maintainers: data.maintainers,
     comments: data.comments,
   }
