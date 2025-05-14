@@ -45,8 +45,8 @@ def encrypt_password(password: str) -> str:
     return fernet.encrypt(password.encode()).decode()
 
 def is_password_updated(new_password: str, current_encrypted_password: str) -> bool:
-    decrypted_password = fernet.decrypt(current_encrypted_password.encode()).decode()
-    return new_password != decrypted_password
+    new_encrypted_password = encrypt_password(new_password)
+    return new_encrypted_password != current_encrypted_password
 
 @app.get('/api/v1/websites', response_model=List[WebsiteOut])
 def read_websites(db: Session = Depends(get_db)):
