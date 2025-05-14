@@ -4,7 +4,6 @@ from datetime import datetime
 
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
-import logging
 
 from database import SessionLocal
 from models import Website, CrawlResult
