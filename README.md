@@ -1,6 +1,9 @@
 # Hub
 
-> Aggregate, monitor, and act on data from all your WordPress sites in one place.
+Aggregate, monitor, and act on data from all your WordPress sites in one place.
+
+> [!IMPORTANT]  
+> This plugin is not yet ready for production.
 
 ## About
 
@@ -10,7 +13,11 @@ This project is designed to be used alongside the [Relay](https://wordpress.org/
 
 ## Features
 
-- List websites and display their health rating, available updates, WordPress version and subsite information
+- Fetch and show:
+  - Health rating,
+  - WordPress version
+  - Updates available
+  - Multisite and subsite
 - Add maintainers
 - Add comments
 
