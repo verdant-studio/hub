@@ -28,7 +28,7 @@
             id="url"
             type="url"
             class="mt-1 block w-full rounded-md border-stone-300 bg-stone-700 p-2 focus:border-green-500 focus:ring-green-500"
-            placeholder="https://www.example.com/wp-json"
+            placeholder="https://www.example.com"
             required
           />
         </div>

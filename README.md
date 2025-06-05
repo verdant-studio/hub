@@ -3,7 +3,7 @@
 Aggregate, monitor, and act on data from all your WordPress sites in one place.
 
 > [!IMPORTANT]  
-> This plugin is not yet ready for production.
+> This application is not yet ready for production.
 
 ## About
 

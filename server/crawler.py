@@ -76,7 +76,7 @@ def handle_crawl_response(db: Session, site: Website, response, elapsed_ms: int)
 def crawl_single_site(db: Session, site: Website):
     """Crawl a single website and store the result."""
     try:
-        url = f"{site.url.rstrip('/')}/relay/v1/core"
+        url = f"{site.url.rstrip('/')}/wp-json/relay/v1/core"
         headers = build_auth_headers(site)
         response, elapsed_ms = fetch_site_data(url, headers)
         handle_crawl_response(db, site, response, elapsed_ms)
