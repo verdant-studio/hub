@@ -47,6 +47,7 @@ def handle_crawl_response(db: Session, site: Website, response, elapsed_ms: int)
         wp_version=None,
         health_rating=None,
         updates_available=None,
+        directory_sizes=None,
         timestamp=datetime.utcnow(),
         multisite=None,
         subsites=None,
@@ -61,6 +62,7 @@ def handle_crawl_response(db: Session, site: Website, response, elapsed_ms: int)
                 result.wp_version = data['wp_version']
                 result.health_rating = data['health_rating']
                 result.updates_available = data['updates_available']
+                result.directory_sizes = data['directory_sizes']
                 result.multisite = data['multisite']
                 result.subsites = data['subsites'] if data['multisite'] else None
             else:

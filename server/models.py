@@ -15,6 +15,7 @@ class CrawlResult(Base):
     wp_version = Column(String, nullable=True)
     health_rating = Column(Integer, nullable=True)
     updates_available = Column(Integer, nullable=True)
+    directory_sizes = Column(JSON, nullable=True)
     multisite = Column(Boolean, nullable=True)
     subsites = Column(JSON, nullable=True)
 

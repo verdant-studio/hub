@@ -14,9 +14,10 @@ This project is designed to be used alongside the [Relay](https://wordpress.org/
 ## Features
 
 - Fetch and show:
-  - Health rating,
+  - Health rating
   - WordPress version
   - Updates available
+  - Directory sizes
   - Multisite and subsite
 - Add maintainers
 - Add comments
