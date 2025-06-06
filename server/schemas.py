@@ -7,6 +7,11 @@ class SubSite(BaseModel):
     site_url: HttpUrl
     site_name: str
 
+class DirectorySizes(BaseModel):
+    size: str
+    debug: str
+    raw: int
+
 class CrawlResultOut(BaseModel):
     id: int
     status_code: Optional[int]
@@ -16,6 +21,7 @@ class CrawlResultOut(BaseModel):
     wp_version: Optional[str]
     health_rating: Optional[int]
     updates_available: Optional[int]
+    directory_sizes: Optional[dict] = None
     multisite: Optional[bool] = None
     subsites: Optional[List[SubSite]] = None
 

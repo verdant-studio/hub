@@ -94,6 +94,24 @@
       </form>
 
       <div>
+        <h2 class="text-3xl font-bold mb-5">Directory Sizes</h2>
+        <div class="rounded bg-stone-800 overflow-hidden">
+          <table class="table-auto w-full text-left text-stone-400">
+            <tbody>
+              <tr
+                v-for="entry in filteredDirectorySizes"
+                :key="entry.key"
+                class="odd:bg-stone-700 odd:text-stone-300 text-sm"
+              >
+                <td class="p-3">{{ entry.key }}</td>
+                <td class="p-3">{{ entry.size }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
         <h2 class="text-3xl font-bold mb-5">Log</h2>
         <div class="rounded bg-stone-800 overflow-hidden">
           <table class="table-auto w-full text-left text-stone-400">
@@ -119,7 +137,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 
@@ -140,9 +158,25 @@ interface CrawlResult {
   status_code?: number
   response_time_ms?: number
   timestamp: string
+  directory_sizes?: Record<string, { size: string; debug: string, raw: number }>
 }
 
 const crawlResults = ref<CrawlResult[]>([])
+
+const filteredDirectorySizes = computed(() => {
+  const directorySizes = crawlResults.value[0]?.directory_sizes || {}
+  return Object.entries(directorySizes)
+    .filter(([, value]) => value)
+    .map(([key, value]) => ({
+      key: key
+        .replace('_size', '')
+        .replace(/_/g, ' ')
+        .replace(/^./, (char) => char.toUpperCase())
+        .replace('Wordpress', 'WordPress'),
+      size: value.size || 'N/A',
+      debug: value.debug || 'N/A',
+    }))
+})
 
 onMounted(async () => {
   // Fetch website data
