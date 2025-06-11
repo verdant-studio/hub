@@ -141,6 +141,8 @@ import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const route = useRoute()
 const router = useRouter()
 const id = route.params.id
@@ -180,7 +182,7 @@ const filteredDirectorySizes = computed(() => {
 
 onMounted(async () => {
   // Fetch website data
-  const { data } = await axios.get(`http://localhost:8000/api/v1/websites/${id}`)
+  const { data } = await axios.get(`${API_URL}/api/v1/websites/${id}`)
   form.value = {
     name: data.name,
     url: data.url,
@@ -192,7 +194,7 @@ onMounted(async () => {
 
   // Fetch last 5 crawl results
   try {
-    const results = await axios.get(`http://localhost:8000/api/v1/crawl-results/${id}`)
+    const results = await axios.get(`${API_URL}/api/v1/crawl-results/${id}`)
     crawlResults.value = results.data.slice(0, 5)
   } catch (err) {
     console.error('Failed to fetch crawl results:', err)
@@ -201,7 +203,7 @@ onMounted(async () => {
 })
 
 const updateWebsite = async () => {
-  await axios.put(`http://localhost:8000/api/v1/websites/${id}`, form.value)
+  await axios.put(`${API_URL}/api/v1/websites/${id}`, form.value)
   router.push('/')
 }
 
@@ -210,7 +212,7 @@ const deleteWebsite = async () => {
   if (!confirmDelete) return
 
   try {
-    await axios.delete(`http://localhost:8000/api/v1/websites/${id}`)
+    await axios.delete(`${API_URL}/api/v1/websites/${id}`)
     alert('Website deleted.')
     router.push('/')
   } catch (err) {

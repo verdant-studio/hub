@@ -12,6 +12,10 @@ import {
 import TableHealth from './TableHealth.vue'
 import TableSiteName from './TableSiteName.vue'
 
+const API_URL = import.meta.env.VITE_API_URL;
+
+console.log(API_URL);
+
 type Site = {
   id: number
   name: string
@@ -37,7 +41,7 @@ const sorting = ref<SortingState>([])
 
 onMounted(async () => {
   try {
-    const res = await axios.get<Site[]>('http://localhost:8000/api/v1/websites')
+    const res = await axios.get<Site[]>(`${API_URL}/api/v1/websites`)
     data.value = res.data
   } catch (err) {
     console.error('Failed to fetch websites', err)

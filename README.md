@@ -24,7 +24,22 @@ This project is designed to be used alongside the [Relay](https://wordpress.org/
 
 ## Getting started
 
-### Server
+### Option 1. Docker
+
+```sh
+# run docker compose
+docker compose up --build
+
+# stop containers
+docker compose down
+
+# optional: stop and remove everything including volumes
+docker compose down --volumes --remove-orphans
+```
+
+### Option 2. Manual
+
+#### Server
 
 ```sh
 # create virtual environment
@@ -45,7 +60,7 @@ uvicorn main:app --reload
 
 The API docs are available at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
 
-### Client
+#### Client
 
 ```sh
 # install dependencies

@@ -1,0 +1,19 @@
+services:
+  backend:
+    build:
+      context: ./server
+    environment:
+      - CLIENT_URL=${CLIENT_URL}
+      - FERNET_SECRET_KEY=${FERNET_SECRET_KEY}
+    env_file:
+      - ./.env
+
+  frontend:
+    build:
+      context: ./client
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
