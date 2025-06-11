@@ -18,8 +18,5 @@ RUN apt-get update && apt-get install -y \
 COPY server/requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy project files
-COPY server .
-
 # Command to run the app with gunicorn+uvicorn workers
 CMD ["gunicorn", "main:app", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]
