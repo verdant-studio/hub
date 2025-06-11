@@ -70,6 +70,8 @@
 <script lang="ts">
 import axios from 'axios'
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default {
   data() {
     return {
@@ -84,7 +86,7 @@ export default {
   methods: {
     async submitForm() {
       try {
-        await axios.post('http://localhost:8000/api/v1/websites', this.form)
+        await axios.post(`${API_URL}/api/v1/websites`, this.form)
         this.$router.push('/')
         this.form = { name: '', url: '', username: '', app_password: '' }
       } catch (err) {

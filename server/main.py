@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 import logging
+import os
 
 logging.basicConfig(level=logging.INFO)
 
@@ -18,10 +19,14 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+origins = [
+    os.environ.get('CLIENT_URL', 'http://localhost:5173')
+]
+
 # CORS for frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['http://localhost:5173'],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*'],
