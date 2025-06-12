@@ -33,26 +33,15 @@
           />
         </div>
         <div>
-          <label for="username" class="block text-lg font-medium text-stone-400 cursor-pointer">Username</label>
-          <input
-            v-model="form.username"
-            id="username"
-            type="text"
-            class="mt-1 block w-full rounded-md border-stone-300 bg-stone-700 p-2 focus:border-green-500 focus:ring-green-500"
-            placeholder="Enter your username"
-            required
-          />
-        </div>
-        <div>
-          <label for="app-password" class="block text-lg font-medium text-stone-400 cursor-pointer"
-            >Application Password</label
+          <label for="api-key" class="block text-lg font-medium text-stone-400 cursor-pointer"
+            >API Key</label
           >
           <input
-            v-model="form.app_password"
-            id="app-password"
+            v-model="form.api_key"
+            id="api-key"
             type="password"
             class="mt-1 block w-full rounded-md border-stone-300 bg-stone-700 p-2 focus:border-green-500 focus:ring-green-500"
-            placeholder="Enter your application password"
+            placeholder="Enter the API key"
           />
         </div>
         <hr class="border-stone-700" />
@@ -150,8 +139,7 @@ const id = route.params.id
 const form = ref({
   name: '',
   url: '',
-  username: '',
-  app_password: '',
+  api_key: '',
   maintainers: '',
   comments: '',
 })
@@ -186,8 +174,7 @@ onMounted(async () => {
   form.value = {
     name: data.name,
     url: data.url,
-    username: data.username,
-    app_password: '',
+    api_key: data.api_key,
     maintainers: data.maintainers,
     comments: data.comments,
   }

@@ -5,7 +5,6 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from models import Website, CrawlResult
 from schemas import CrawlResultOut, WebsiteCreate, WebsiteOut
-from settings import fernet
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 from typing import List
@@ -46,13 +45,6 @@ def get_website_by_id(website_id: int, db: Session) -> Website:
         raise HTTPException(status_code=404, detail='Website not found')
     return website
 
-def encrypt_password(password: str) -> str:
-    return fernet.encrypt(password.encode()).decode()
-
-def is_password_updated(new_password: str, current_encrypted_password: str) -> bool:
-    new_encrypted_password = encrypt_password(new_password)
-    return new_encrypted_password != current_encrypted_password
-
 @app.get('/api/v1/websites', response_model=List[WebsiteOut])
 def read_websites(db: Session = Depends(get_db)):
     websites = db.query(Website).all()
@@ -70,13 +62,10 @@ def read_websites(db: Session = Depends(get_db)):
 
 @app.post('/api/v1/websites')
 def create_website(website: WebsiteCreate, db: Session = Depends(get_db)):
-    encrypted_pw = encrypt_password(website.app_password)
-
     db_website = Website(
         name=website.name,
         url=str(website.url),
-        username=website.username,
-        app_password=encrypted_pw
+        api_key=website.api_key
     )
 
     db.add(db_website)
@@ -108,12 +97,9 @@ def update_website(website_id: int, updated: WebsiteCreate, db: Session = Depend
 
     website.name = updated.name
     website.url = str(updated.url)
-    website.username = updated.username
+    website.api_key = updated.api_key
     website.maintainers = updated.maintainers
     website.comments = updated.comments
-
-    if updated.app_password and is_password_updated(updated.app_password, website.app_password):
-        website.app_password = encrypt_password(updated.app_password)
 
     db.commit()
     db.refresh(website)

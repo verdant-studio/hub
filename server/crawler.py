@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 
 from database import SessionLocal
 from models import Website, CrawlResult
-from settings import fernet
 
 # Configuration toggle
 VERIFY_SSL = True  # Set to False only for debugging
@@ -25,11 +24,8 @@ def prune_old_crawls(db: Session, website_id: int, keep: int = 5):
     db.commit()
 
 def build_auth_headers(site: Website) -> dict:
-    """Return Basic Auth headers for a given site."""
-    decrypted_pw = fernet.decrypt(site.app_password.encode()).decode()
-    credentials = f"{site.username}:{decrypted_pw}"
-    encoded = base64.b64encode(credentials.encode()).decode()
-    return {"Authorization": f"Basic {encoded}"}
+    """Return Authorization headers for a given site."""
+    return {"X-RELAY-API-KEY": site.api_key}
 
 def fetch_site_data(url: str, headers: dict) -> tuple:
     """Send GET request and return response + elapsed time in ms."""
@@ -56,7 +52,7 @@ def handle_crawl_response(db: Session, site: Website, response, elapsed_ms: int)
     if response.status_code == 200:
         try:
             data = response.json()
-            required_keys = ['wp_version', 'health_rating', 'updates_available', 'multisite', 'subsites']
+            required_keys = ['wp_version', 'health_rating', 'updates_available', 'multisite']
 
             if all(key in data for key in required_keys):
                 result.wp_version = data['wp_version']

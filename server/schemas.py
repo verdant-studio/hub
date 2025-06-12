@@ -30,8 +30,7 @@ class CrawlResultOut(BaseModel):
 class WebsiteCreate(BaseModel):
     name: str
     url: HttpUrl
-    username: str
-    app_password: str
+    api_key: str
     maintainers: Optional[str] = None
     comments: Optional[str] = None
 
@@ -44,8 +43,7 @@ class WebsiteOut(BaseModel):
     id: int
     name: str
     url: HttpUrl
-    username: str
-    app_password: str
+    api_key: str
     maintainers: Optional[str] = None
     comments: Optional[str] = None
     latest_crawl: Optional[CrawlResultOut] = None

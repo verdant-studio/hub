@@ -27,8 +27,7 @@ class Website(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     url = Column(String, nullable=False)
-    username = Column(String, nullable=False)
-    app_password = Column(String, nullable=False)
+    api_key = Column(String, nullable=False)
     maintainers = Column(String, nullable=True)
     comments = Column(String, nullable=True)
 

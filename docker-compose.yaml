@@ -4,7 +4,6 @@ services:
       context: ./server
     environment:
       - CLIENT_URL=${CLIENT_URL}
-      - FERNET_SECRET_KEY=${FERNET_SECRET_KEY}
     env_file:
       - ./.env
 

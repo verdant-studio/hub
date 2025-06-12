@@ -33,26 +33,15 @@
           />
         </div>
         <div>
-          <label for="username" class="block text-lg font-medium text-stone-400 cursor-pointer">Username</label>
-          <input
-            v-model="form.username"
-            id="username"
-            type="text"
-            class="mt-1 block w-full rounded-md border-stone-300 bg-stone-700 p-2 focus:border-green-500 focus:ring-green-500"
-            placeholder="Enter your username"
-            required
-          />
-        </div>
-        <div>
-          <label for="app-password" class="block text-lg font-medium text-stone-400 cursor-pointer"
-            >Application Password</label
+          <label for="api-key" class="block text-lg font-medium text-stone-400 cursor-pointer"
+            >API Key</label
           >
           <input
-            v-model="form.app_password"
-            id="app-password"
+            v-model="form.api_key"
+            id="api-key"
             type="password"
             class="mt-1 block w-full rounded-md border-stone-300 bg-stone-700 p-2 focus:border-green-500 focus:ring-green-500"
-            placeholder="Enter your application password"
+            placeholder="Enter the API key"
             required
           />
         </div>
@@ -78,8 +67,7 @@ export default {
       form: {
         name: '',
         url: '',
-        username: '',
-        app_password: ''
+        api_key: ''
       }
     };
   },
@@ -88,7 +76,7 @@ export default {
       try {
         await axios.post(`${API_URL}/api/v1/websites`, this.form)
         this.$router.push('/')
-        this.form = { name: '', url: '', username: '', app_password: '' }
+        this.form = { name: '', url: '', api_key: '' }
       } catch (err) {
         console.error(err)
       }
