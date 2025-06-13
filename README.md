@@ -51,9 +51,6 @@ source venv/bin/activate
 # install api dependencies
 pip install -r requirements.txt
 
-# create and set encryption key in .env
-python scripts/setup_env.py
-
 # start uvicorn
 uvicorn main:app --reload
 ```
