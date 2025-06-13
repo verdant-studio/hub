@@ -128,7 +128,7 @@ def get_crawl_results(website_id: int, db: Session = Depends(get_db)):
 
 # APScheduler setup
 scheduler = BackgroundScheduler()
-scheduler.add_job(crawl_sites, 'interval', minutes=1)  # Change interval as needed
+scheduler.add_job(crawl_sites, 'interval', minutes=15)
 scheduler.start()
 
 @app.on_event('shutdown')
