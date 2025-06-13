@@ -3,7 +3,7 @@ services:
     build:
       context: ./server
     volumes:
-        - hub_db_data:/app/hub.db
+        - ./server/hub.db:/app/hub.db
     environment:
       - CLIENT_URL=${CLIENT_URL}
     env_file:
