@@ -74,7 +74,7 @@ export default {
   methods: {
     async submitForm() {
       try {
-        await axios.post(`${API_URL}/api/v1/websites`, this.form)
+        await axios.post(`${API_URL}/v1/websites`, this.form)
         this.$router.push('/')
         this.form = { name: '', url: '', api_key: '' }
       } catch (err) {
