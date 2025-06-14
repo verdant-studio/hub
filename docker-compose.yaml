@@ -3,11 +3,10 @@ services:
     build:
       context: ./server
     volumes:
-        - hub_db_data:/app/hub.db
+        - hub_db_data:/app/data
     environment:
+      - DATABASE_URL=sqlite:////app/data/hub.db
       - CLIENT_URL=${CLIENT_URL}
-    env_file:
-      - ./.env
 
   frontend:
     build:

@@ -45,7 +45,7 @@ def get_website_by_id(website_id: int, db: Session) -> Website:
         raise HTTPException(status_code=404, detail='Website not found')
     return website
 
-@app.get('/api/v1/websites', response_model=List[WebsiteOut])
+@app.get('/v1/websites', response_model=List[WebsiteOut])
 def read_websites(db: Session = Depends(get_db)):
     websites = db.query(Website).all()
 
@@ -60,7 +60,7 @@ def read_websites(db: Session = Depends(get_db)):
 
     return websites
 
-@app.post('/api/v1/websites')
+@app.post('/v1/websites')
 def create_website(website: WebsiteCreate, db: Session = Depends(get_db)):
     db_website = Website(
         name=website.name,
@@ -76,7 +76,7 @@ def create_website(website: WebsiteCreate, db: Session = Depends(get_db)):
 
     return db_website
 
-@app.get('/api/v1/websites/{website_id}', response_model=WebsiteOut)
+@app.get('/v1/websites/{website_id}', response_model=WebsiteOut)
 def get_website(website_id: int, db: Session = Depends(get_db)):
     website = get_website_by_id(website_id, db)
 
@@ -91,7 +91,7 @@ def get_website(website_id: int, db: Session = Depends(get_db)):
 
     return website
 
-@app.put('/api/v1/websites/{website_id}', response_model=WebsiteOut)
+@app.put('/v1/websites/{website_id}', response_model=WebsiteOut)
 def update_website(website_id: int, updated: WebsiteCreate, db: Session = Depends(get_db)):
     website = get_website_by_id(website_id, db)
 
@@ -105,14 +105,14 @@ def update_website(website_id: int, updated: WebsiteCreate, db: Session = Depend
     db.refresh(website)
     return website
 
-@app.delete('/api/v1/websites/{website_id}', status_code=204)
+@app.delete('/v1/websites/{website_id}', status_code=204)
 def delete_website(website_id: int, db: Session = Depends(get_db)):
     website = get_website_by_id(website_id, db)
     db.delete(website)
     db.commit()
     return
 
-@app.get('/api/v1/crawl-results/{website_id}', response_model=List[CrawlResultOut])
+@app.get('/v1/crawl-results/{website_id}', response_model=List[CrawlResultOut])
 def get_crawl_results(website_id: int, db: Session = Depends(get_db)):
     results = (
         db.query(CrawlResult)
