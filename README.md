@@ -42,6 +42,9 @@ docker compose down --volumes --remove-orphans
 #### Server
 
 ```sh
+# copy the .env.example to .env
+cp .env.example .env
+
 # create virtual environment
 cd server && python3 -m venv venv
 
@@ -55,7 +58,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-The API docs are available at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
+The API docs are available at [http://127.0.0.1:2000/docs](http://127.0.0.1:8000/docs).
 
 #### Client
 
