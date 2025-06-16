@@ -55,7 +55,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # start uvicorn
-uvicorn main:app --reload
+uvicorn main:app --port=2000 --reload
 ```
 
 The API docs are available at [http://127.0.0.1:2000/docs](http://127.0.0.1:8000/docs).

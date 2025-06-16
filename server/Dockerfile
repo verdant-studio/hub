@@ -14,4 +14,4 @@ ENV CLIENT_URL=${CLIENT_URL}
 
 EXPOSE 2000
 
-CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "main:app", "--workers", "4", "--bind", "0.0.0.0:2000"]
+CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "main:app", "--workers", "1", "--bind", "0.0.0.0:2000"]
