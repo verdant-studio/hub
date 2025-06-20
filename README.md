@@ -2,9 +2,6 @@
 
 Aggregate, monitor, and act on data from all your WordPress sites in one place.
 
-> [!IMPORTANT]  
-> This application is not yet ready for production.
-
 ## About
 
 Hub lets you monitor your WordPress websites and their status from one place.
