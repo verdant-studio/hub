@@ -53,7 +53,7 @@ const columns = [
     cell: ({ row }) => {
       const subsites = row.original.latest_crawl?.subsites;
       const comments = row.original.comments;
-      return (<TableSiteName name={row.original.name} url={row.original.url} subsites={subsites} comments={comments} />)
+      return (<TableSiteName id={row.original.id} name={row.original.name} subsites={subsites} comments={comments} />)
     },
   }),
   columnHelper.accessor('latest_crawl.health_rating', {
@@ -187,9 +187,9 @@ const table = useVueTable({
           </td>
           <td class="px-4 py-3">
             <div class="flex justify-end">
-              <RouterLink :to="`/edit/${row.original.id}`">
+              <a :href="row.original.url" target="_blank" rel="noreferrer">
                 <svg
-                  class="w-4 h-4"
+                  class="w-5 h-5"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   stroke="currentColor"
@@ -198,9 +198,10 @@ const table = useVueTable({
                   stroke-width="2"
                   viewBox="0 0 24 24"
                 >
-                  <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
                 </svg>
-              </RouterLink>
+              </a>
             </div>
           </td>
         </tr>

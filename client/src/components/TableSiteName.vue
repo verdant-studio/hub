@@ -4,9 +4,9 @@ import { defineProps } from 'vue';
 import { ModalsContainer, useModal } from 'vue-final-modal'
 import Modal from './Modal.vue';
 
-const { name, url, subsites, comments } = defineProps<{
+const { name, id, subsites, comments } = defineProps<{
+  id: number;
   name: string;
-  url: string;
   subsites?: { site_id: string; site_url: string; site_name: string }[];
   comments?: string;
 }>();
@@ -53,9 +53,9 @@ const { open: openCommentsModal, close: closeCommentsModal } = useModal({
 
 <template>
   <div class="flex space-x-1.5 items-center">
-    <a :href="url" target="_blank" rel="noreferrer">
+    <RouterLink :to="`/edit/${id}`">
       {{ decoded_name }}
-    </a>
+    </RouterLink>
     <button
       v-if="subsites && subsites.length > 0"
       class="text-xs bg-orange-200 text-orange-950 px-1 py-0.5 rounded-sm cursor-help"
