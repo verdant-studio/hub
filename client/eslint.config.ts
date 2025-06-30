@@ -3,11 +3,6 @@ import { configureVueProject, defineConfigWithVueTs, vueTsConfigs } from '@vue/e
 import pluginVue from 'eslint-plugin-vue'
 import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
 
-// To allow more languages other than `ts` in `.vue` files, uncomment the following lines:
-// import { configureVueProject } from '@vue/eslint-config-typescript'
-// configureVueProject({ scriptLangs: ['ts', 'tsx'] })
-// More info at https://github.com/vuejs/eslint-config-typescript/#advanced-setup
-
 configureVueProject({ scriptLangs: ['ts', 'tsx'] })
 
 export default defineConfigWithVueTs(
@@ -18,7 +13,12 @@ export default defineConfigWithVueTs(
 
   globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
 
-  pluginVue.configs['flat/essential'],
+  {
+    ...pluginVue.configs['flat/essential'][0].rules,
+    rules: {
+      'vue/multi-word-component-names': 'off',
+    },
+  },
   vueTsConfigs.recommended,
   skipFormatting,
 )
