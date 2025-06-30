@@ -1,10 +1,11 @@
 <script setup lang="tsx">
-import { ref, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import axios from 'axios'
 import {
   createColumnHelper,
   FlexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   type SortingState,
   getSortedRowModel,
   useVueTable,
@@ -34,8 +35,13 @@ type Site = {
 }
 
 const data = ref<Site[]>([])
-
+const globalFilter = ref('')
 const sorting = ref<SortingState>([])
+
+const sortingIcons = computed(() => ({
+  asc: ' 🔼',
+  desc: ' 🔽',
+}));
 
 onMounted(async () => {
   try {
@@ -108,9 +114,18 @@ const table = useVueTable({
   },
   columns,
   state: {
+    get globalFilter() {
+      return globalFilter.value
+    },
     get sorting() {
       return sorting.value
     },
+  },
+  onGlobalFilterChange: updaterOrValue => {
+    globalFilter.value =
+      typeof updaterOrValue === 'function'
+        ? updaterOrValue(globalFilter.value)
+        : updaterOrValue
   },
   onSortingChange: updaterOrValue => {
     sorting.value =
@@ -119,13 +134,25 @@ const table = useVueTable({
         : updaterOrValue
   },
   getCoreRowModel: getCoreRowModel(),
+  getFilteredRowModel: getFilteredRowModel(),
   getSortedRowModel: getSortedRowModel(),
 })
 </script>
 
 <template>
   <div class="relative flex flex-col w-full overflow-x-auto">
-    <h1 class="text-4xl font-bold mb-6">Hub</h1>
+    <header class="flex flex-row justify-between mb-6">
+      <h1 class="text-4xl font-bold">Hub</h1>
+      <div>
+        <input
+          v-model="globalFilter"
+          type="text"
+          placeholder="Search sites..."
+          class="border-2 border-stone-700 focus:outline-none focus:border-stone-600 px-2.5 py-2 rounded w-full"
+        />
+      </div>
+    </header>
+
     <table class="bg-stone-800 rounded w-full text-left table-auto min-w-max overflow-hidden">
       <thead>
         <tr
@@ -142,11 +169,13 @@ const table = useVueTable({
             "
             @click="header.column.getToggleSortingHandler()?.($event)"
           >
-          {{
-                { asc: ' 🔼', desc: ' 🔽' }[
-                  header.column.getIsSorted() as string
-                ]
-              }}
+            {{
+              header.column.getIsSorted() === 'asc'
+                ? sortingIcons.asc
+                : header.column.getIsSorted() === 'desc'
+                  ? sortingIcons.desc
+                  : ''
+            }}
             <FlexRender
               v-if="!header.isPlaceholder"
               :render="header.column.columnDef.header"
