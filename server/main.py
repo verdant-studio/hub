@@ -93,17 +93,20 @@ def get_website(website_id: int, db: Session = Depends(get_db)):
 
 @app.put('/v1/websites/{website_id}', response_model=WebsiteOut)
 def update_website(website_id: int, updated: WebsiteCreate, db: Session = Depends(get_db)):
-    website = get_website_by_id(website_id, db)
+    db_website = get_website_by_id(website_id, db)
 
-    website.name = updated.name
-    website.url = str(updated.url)
-    website.api_key = updated.api_key
-    website.maintainers = updated.maintainers
-    website.comments = updated.comments
+    db_website.name = updated.name
+    db_website.url = str(updated.url)
+    db_website.api_key = updated.api_key
+    db_website.maintainers = updated.maintainers
+    db_website.comments = updated.comments
 
     db.commit()
-    db.refresh(website)
-    return website
+    db.refresh(db_website)
+
+    crawl_single_site(db, db_website)
+
+    return db_website
 
 @app.delete('/v1/websites/{website_id}', status_code=204)
 def delete_website(website_id: int, db: Session = Depends(get_db)):
