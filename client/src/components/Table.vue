@@ -188,7 +188,6 @@ const table = useVueTable({
                 <svg
                   class="w-5 h-5 flex"
                   xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
                   stroke="currentColor"
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -220,7 +219,6 @@ const table = useVueTable({
                 <svg
                   class="w-5 h-5"
                   xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
                   stroke="currentColor"
                   stroke-linecap="round"
                   stroke-linejoin="round"
