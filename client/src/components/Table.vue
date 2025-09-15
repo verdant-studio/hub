@@ -15,6 +15,12 @@ import TableSiteName from './TableSiteName.vue'
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+type Subsite = {
+  site_id: string;
+  site_url: string;
+  site_name: string;
+};
+
 type Site = {
   id: number
   name: string
@@ -30,7 +36,7 @@ type Site = {
     health_rating: number
     updates_available: number
     multisite: boolean
-    subsites: any
+    subsites: Subsite[]
   }
 }
 
@@ -52,10 +58,35 @@ onMounted(async () => {
   }
 })
 
+// Include subsites in the global filter search
+function globalFilterFn(
+  row: { original: Site },
+  columnId: string,
+  filterValue: string
+): boolean {
+  const site: Site = row.original
+  const subsites = site.latest_crawl?.subsites || []
+  const subsiteSearch = subsites.map(s => `${s.site_name} ${s.site_url}`).join(' ')
+
+  const searchable = [
+    site.name,
+    site.maintainers,
+    site.comments,
+    site.latest_crawl?.wp_version,
+    site.latest_crawl?.updates_available?.toString(),
+    subsiteSearch,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase()
+
+  return searchable.includes(filterValue.toLowerCase())
+}
+
 const columnHelper = createColumnHelper<Site>()
 const columns = [
   columnHelper.accessor('name', {
-    header: () => 'Name',
+    header: 'Name',
     cell: ({ row }) => {
       const subsites = row.original.latest_crawl?.subsites;
       const comments = row.original.comments;
@@ -121,6 +152,7 @@ const table = useVueTable({
       return sorting.value
     },
   },
+  globalFilterFn,
   onGlobalFilterChange: updaterOrValue => {
     globalFilter.value =
       typeof updaterOrValue === 'function'

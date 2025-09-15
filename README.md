@@ -18,6 +18,8 @@ This project is designed to be used alongside the [Relay](https://wordpress.org/
   - Updates available
   - Directory sizes
   - Multisite and subsite
+- Sorting
+- Searching (search includes subsites)
 - Add maintainers
 - Add comments
 
