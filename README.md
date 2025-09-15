@@ -2,7 +2,7 @@
 
 Aggregate, monitor, and act on data from all your WordPress sites in one place.
 
-<img width="1008" alt="screenshot" src="https://github.com/user-attachments/assets/71246156-830c-4056-832e-e1869a17f7a9" />
+<img width="1263" height="335" alt="hub-preview" src="https://github.com/user-attachments/assets/d90a8a34-34cd-49d2-ac5c-f4e000c26962" />
 
 ## About
 
