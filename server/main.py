@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(root_path='/api')
 
 origins = [
     os.environ.get('CLIENT_URL', 'http://localhost:5173')
