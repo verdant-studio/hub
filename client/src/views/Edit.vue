@@ -148,7 +148,7 @@ interface CrawlResult {
   status_code?: number
   response_time_ms?: number
   timestamp: string
-  directory_sizes?: Record<string, { size: string; debug: string, raw: number }>
+  directory_sizes?: Record<string, { size: string; raw: number }>
 }
 
 const crawlResults = ref<CrawlResult[]>([])
@@ -163,8 +163,7 @@ const filteredDirectorySizes = computed(() => {
         .replace(/_/g, ' ')
         .replace(/^./, (char) => char.toUpperCase())
         .replace('Wordpress', 'WordPress'),
-      size: value.size || 'N/A',
-      debug: value.debug || 'N/A',
+      size: value.size || 'N/A'
     }))
 })
 
