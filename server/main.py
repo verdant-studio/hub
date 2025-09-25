@@ -47,7 +47,7 @@ def get_website_by_id(website_id: int, db: Session) -> Website:
 
 @app.get('/v1/websites', response_model=List[WebsiteOut])
 def read_websites(db: Session = Depends(get_db)):
-    websites = db.query(Website).all()
+    websites = db.query(Website).order_by(Website.name).all()
 
     for website in websites:
         latest_crawl = (
