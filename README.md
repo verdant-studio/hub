@@ -28,6 +28,9 @@ This project is designed to be used alongside the [Relay](https://wordpress.org/
 ### Option 1. Docker
 
 ```sh
+# copy the .env.example to .env
+cp .env.example .env
+
 # run docker compose
 docker compose up --build
 
@@ -59,7 +62,7 @@ pip install -r requirements.txt
 uvicorn main:app --port=2000 --reload
 ```
 
-The API docs are available at [http://127.0.0.1:2000/docs](http://127.0.0.1:8000/docs).
+The API docs are available at [http://127.0.0.1:2000/docs](http://127.0.0.1:2000/docs).
 
 #### Client
 
@@ -71,6 +74,9 @@ cd client && npm i
 npm run format
 npm run dev
 ```
+
+The client will be available at [http://127.0.0.1:5173](http://127.0.0.1:5173).
+
 
 ## Documentation
 
