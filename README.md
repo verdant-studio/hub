@@ -49,17 +49,11 @@ docker compose down --volumes --remove-orphans
 # copy the .env.example to .env
 cp .env.example .env
 
-# create virtual environment
-cd server && python3 -m venv venv
-
-# activate virtual environment
-source venv/bin/activate
-
-# install api dependencies
-pip install -r requirements.txt
+# install api dependencies (requires uv: https://docs.astral.sh/uv/)
+cd server && uv sync
 
 # start uvicorn
-uvicorn main:app --port=2000 --reload
+uv run uvicorn main:app --port=2000 --reload
 ```
 
 The API docs are available at [http://127.0.0.1:2000/docs](http://127.0.0.1:2000/docs).
