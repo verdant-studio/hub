@@ -7,6 +7,7 @@ from models import Website, CrawlResult
 from schemas import CrawlResultOut, WebsiteCreate, WebsiteOut
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
+from contextlib import asynccontextmanager
 from typing import List
 
 import logging
@@ -16,7 +17,17 @@ logging.basicConfig(level=logging.INFO)
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(root_path='/api')
+# APScheduler setup
+scheduler = BackgroundScheduler()
+scheduler.add_job(crawl_sites, 'interval', minutes=15)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    scheduler.start()
+    yield
+    scheduler.shutdown()
+
+app = FastAPI(root_path='/api', lifespan=lifespan)
 
 origins = [
     os.environ.get('CLIENT_URL', 'http://localhost:5173')
@@ -128,12 +139,3 @@ def get_crawl_results(website_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail='No crawl results found for this website')
 
     return results
-
-# APScheduler setup
-scheduler = BackgroundScheduler()
-scheduler.add_job(crawl_sites, 'interval', minutes=15)
-scheduler.start()
-
-@app.on_event('shutdown')
-def shutdown_event():
-    scheduler.shutdown()

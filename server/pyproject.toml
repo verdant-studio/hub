@@ -4,13 +4,14 @@ version = "0.1.0"
 description = "Hub API server"
 requires-python = ">=3.12"
 dependencies = [
-    "apscheduler>=3.11.0",
-    "fastapi[standard]>=0.115.12",
-    "gunicorn>=21.2.0",
-    "pydantic>=2.11.4",
-    "python-dotenv>=1.1.0",
-    "requests>=2.32.3",
-    "sqlalchemy>=2.0.40",
+    "apscheduler>=3.11.3",
+    "fastapi>=0.165.0",
+    "gunicorn>=27.0.1",
+    "pydantic>=2.14.4",
+    "python-dotenv>=1.2.4",
+    "requests>=2.34.2",
+    "sqlalchemy>=2.1.9",
+    "uvicorn[standard]>=0.54.0",
 ]
 
 [tool.uv]
